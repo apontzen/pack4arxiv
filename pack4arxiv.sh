@@ -62,7 +62,14 @@ do
   if [ -e $g ]
   then
     echo "  " $g
-    cp $g $tempdir/
+    grep Illustrator $g > /dev/null
+    if [ $? -gt 0 ]
+    then
+      cp $g $tempdir/$g
+    else
+      echo "             -- Illustrator file, stripping down pdf"
+      gs -sDEVICE=pdfwrite -dPDFSETTINGS=/printer -dNOPAUSE -dQUIET -dBATCH -sColorConversionStrategy=LeaveColorUnchanged -sColorImageDict="<< /QFactor 0.95 /Blend 1 /HSamples [2 1 1 2] /VSamples [2 1 1 2] >>" -sOutputFile=$tempdir/$g $g
+    fi
   fi
 done
 
